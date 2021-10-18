@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var myHeaders = new Headers();
+        myHeaders.append("Accept", "application/vnd.api+json");
+        myHeaders.append("Content-Type", "application/vnd.api+json");
+        myHeaders.append("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC93c3UuYXBpLnBzZS1saW5na3VwLXByaXZhdC5kZXZlbG9wXC9hcGlcL3YxXC9qc29uYXBpXC9sb2dpbiIsImlhdCI6MTYzNDU1NTA4MywiZXhwIjoxNjM0NzcxMDgzLCJuYmYiOjE2MzQ1NTUwODMsImp0aSI6InZ6ckpXeFUyOVhmOEh0VkoiLCJzdWIiOjEsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.t8nEE-Gellr9NTN7XCDeOZZHkXecjWH-SQ5sLQmXuIk");
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch("http://wsu.api.pse-lingkup-privat.develop/api/v1/jsonapi/users/1/penyelenggara-sistem-elektronik?include=sistemElektronik.status", requestOptions)
+            .then(response => response.json())
+            .then((result) => {
+                const daftarSistemElektronik = {};
+                const daftarStatusSistemElektronik = {};
+
+                result.included.map((includedRelationship) => {
+                    switch (includedRelationship.type) {
+                        case 'sistemElektronik':
+                            daftarSistemElektronik[includedRelationship.id] = includedRelationship;
+                            break;
+                        case 'statusSistemElektronik':
+                            daftarStatusSistemElektronik[includedRelationship.id] = includedRelationship;
+                            break;
+                    }
+                });
+
+                console.log(daftarSistemElektronik);
+                result.data.map((penyelenggaraSistemElektronik) => {
+                    penyelenggaraSistemElektronik.relationships.sistemElektronik.data.map((sistemElektronikRelationship) => {
+                        const sistemElektronik = daftarSistemElektronik[sistemElektronikRelationship.id];
+                        console.log(`${penyelenggaraSistemElektronik.attributes.nama_bh} - ${sistemElektronik.attributes.nama_sistem_elektronik}`);
+                    });
+                });
+            })
+            .catch(error => console.log('error', error));
+    </script>
+</body>
+</html>
