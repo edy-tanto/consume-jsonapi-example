@@ -25,6 +25,8 @@
                 const daftarSistemElektronik = {};
                 const daftarStatusSistemElektronik = {};
 
+                console.log(result);
+
                 result.included.map((includedRelationship) => {
                     switch (includedRelationship.type) {
                         case 'sistemElektronik':
@@ -38,6 +40,8 @@
 
                 console.log(daftarSistemElektronik);
                 result.data.map((penyelenggaraSistemElektronik) => {
+                    console.log(penyelenggaraSistemElektronik);
+                    // id sistemElektronik
                     penyelenggaraSistemElektronik.relationships.sistemElektronik.data.map((sistemElektronikRelationship) => {
                         const sistemElektronik = daftarSistemElektronik[sistemElektronikRelationship.id];
                         console.log(`${penyelenggaraSistemElektronik.attributes.nama_bh} - ${sistemElektronik.attributes.nama_sistem_elektronik}`);
